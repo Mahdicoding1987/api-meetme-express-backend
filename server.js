@@ -22,6 +22,8 @@ app.use('/test-jwt', testJWTRouter);
 app.use('/users', usersRouter);
 app.use('/profiles', profilesRouter);
 app.use('/posts', postsRouter);
+app.use('/uploads', express.static('uploads'))
+
 
 
 

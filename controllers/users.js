@@ -3,9 +3,57 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const multer = require('multer')
+// const upload = multer({ dest: 'uploads/' })
 
 
 const SALT_LENGTH = 12;
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/') // files will be saved in 'uploads' directory
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + '-' + file.originalname) // unique filename
+    }
+  })
+  
+  const upload = multer({ storage: storage })
+  
+  router.post('/upload', upload.single('image'), async (req, res) => {
+    try {
+      const imageUrl = `/uploads/${req.file.filename}` // This will be your local image path
+      res.json({ imageUrl })
+    } catch (error) {
+      res.status(500).json({ error: error.message })
+    }
+  })
+  
+router.put('/:id/avatar', upload.single('avatar'), async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { avatar: req.file.path },
+        { new: true }
+      )
+      res.json(user)
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+    }
+  })
+
+router.put('/:id/avatar', upload.single('avatar'), async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { avatar: req.file.path },
+        { new: true }
+      )
+      res.json(user)
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+    }
+  })
 
 router.post('/signup', async (req, res) => {
     try {
