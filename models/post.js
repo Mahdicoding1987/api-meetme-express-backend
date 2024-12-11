@@ -21,6 +21,11 @@ const postSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
+      image: {
+        type: String,
+        required: false,
+        default: 'https://i.pinimg.com/736x/7f/3b/b8/7f3bb8ca1c26444e3f87281bee19b42f.jpg',
+        },
       category: {
         type: String,
         required: true,

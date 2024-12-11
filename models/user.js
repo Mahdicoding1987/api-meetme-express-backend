@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         enum: ['Male', 'Female', 'prefer not to say']
     },
-    location: {
+    country: {
         type: String,
         required: false
     },

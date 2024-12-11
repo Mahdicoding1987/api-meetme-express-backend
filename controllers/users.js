@@ -19,6 +19,17 @@ const storage = multer.diskStorage({
   })
   
   const upload = multer({ storage: storage })
+
+  const updateUser = async (userId, updateData) => {
+    try {
+      const result = await User.findByIdAndUpdate(userId, updateData, {new: true});
+      console.log('Update result:', result);
+      return result;
+    } catch (error) {
+      console.error('Update error:', error);
+      throw error;
+    }
+  }
   
   router.post('/upload', upload.single('image'), async (req, res) => {
     try {
@@ -26,19 +37,6 @@ const storage = multer.diskStorage({
       res.json({ imageUrl })
     } catch (error) {
       res.status(500).json({ error: error.message })
-    }
-  })
-  
-router.put('/:id/avatar', upload.single('avatar'), async (req, res) => {
-    try {
-      const user = await User.findByIdAndUpdate(
-        req.params.id,
-        { avatar: req.file.path },
-        { new: true }
-      )
-      res.json(user)
-    } catch (error) {
-      res.status(400).json({ error: error.message })
     }
   })
 
@@ -54,6 +52,11 @@ router.put('/:id/avatar', upload.single('avatar'), async (req, res) => {
       res.status(400).json({ error: error.message })
     }
   })
+
+  router.put('/update/:id', async (req, res) => {
+    console.log('Received update data:', req.body);
+    console.log('User ID:', req.params.id);
+  });
 
 router.post('/signup', async (req, res) => {
     try {
@@ -65,7 +68,12 @@ router.post('/signup', async (req, res) => {
         // Create a new user with hashed password
         const user = await User.create({
             username: req.body.username,
-            hashedPassword: bcrypt.hashSync(req.body.password, SALT_LENGTH)
+            hashedPassword: bcrypt.hashSync(req.body.password, SALT_LENGTH),
+            age: req.body.age,
+            gender: req.body.gender,
+            country: req.body.country,
+            bio: req.body.bio,
+            avatar: req.body.avatar
         })
         const token = jwt.sign({ username: user.username, _id: user._id }, process.env.JWT_SECRET);
         res.status(201).json({ user, token });
