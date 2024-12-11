@@ -25,9 +25,9 @@ app.use('/profiles', profilesRouter);
 app.use('/posts', postsRouter);
 app.use('/uploads', express.static('uploads'))
 
+const PORT = process.env.PORT || 3000;
 
 
-
-app.listen(3000, () => {
+app.listen(PORT || 3000, () => {
     console.log('The express app is ready!');
 });
